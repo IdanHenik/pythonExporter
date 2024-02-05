@@ -18,7 +18,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ihenik/hubexporter:${{ github.ref_name }} .
+          docker build -t docker.io/ihenik/hubexporter:${{ github.ref_name }} .
         env:
           DOCKER_BUILDKIT: 1
 
@@ -30,6 +30,6 @@ jobs:
 
       - name: Push Docker image
         run: |
-          docker push ihenik/hubexporter:${{ github.ref_name }}
+          docker push docker.io/ihenik/hubexporter:${{ github.ref_name }}
         env:
           DOCKER_BUILDKIT: 1
