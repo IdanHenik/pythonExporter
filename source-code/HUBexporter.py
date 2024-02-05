@@ -1,6 +1,7 @@
 import json
 import time
 from prometheus_client import Gauge, start_http_server
+from readerJS import get_data_jobs, get_data_teams, get_data_inventory, total_jobs , token, headers
 
 
 start_http_server(8000)
@@ -39,35 +40,29 @@ def get_labels_from_inventory(json_data):
         'created_by': created_by.get('username','')
     }
 
-def create_prometheus_metrics(json_file_path, metrics):
-    with open(json_file_path, 'r') as json_file:
-        data = json.load(json_file)
-
-    if json_file_path == 'total_jobs.json':
-        labels = get_labels_from_job_total(data)
-        metrics['total_successful_jobs_metric'].set(data['total_successful_jobs'])
-        metrics['total_failed_jobs_metric'].set(data['total_failed_jobs'])
-        metrics['total_jobs_num_metric'].set(data['total_jobs_num'])
-        metrics['total_execution_time_avg_metric'].set(data['total_execution_time_avg'])
-    elif json_file_path == 'jobs.json':
-        for job in data:
+def create_prometheus_metrics(data, metrics):
+    if 'total_jobs_data' in data:
+        labels = get_labels_from_job_total(data['total_jobs_data'])
+        metrics['total_successful_jobs_metric'].set(data['total_jobs_data']['total_successful_jobs'])
+        metrics['total_failed_jobs_metric'].set(data['total_jobs_data']['total_failed_jobs'])
+        metrics['total_jobs_num_metric'].set(data['total_jobs_data']['total_jobs_num'])
+        metrics['total_execution_time_avg_metric'].set(data['total_jobs_data']['total_execution_time_avg'])
+    elif 'jobs_data' in data:
+        for job in data['jobs_data']:
             labels = get_labels_from_job(job)
-            metrics['get_jobs'].labels(**labels).set(job['elapsed'])  # Example with labels
-    elif json_file_path == 'teams.json':
-        for team in data:
+            metrics['get_jobs'].labels(**labels).set(job['elapsed'])
+    elif 'teams_data' in data:
+        for team in data['teams_data']:
             labels = get_labels_from_teams(team)
             metrics['aap_find_teams'].labels(**labels).set(team['id'])
-            # Add code to handle metrics for teams if needed
-    elif json_file_path == 'inventories.json':
-        for inventory in data:
+    elif 'inventory_data' in data:
+        for inventory in data['inventory_data']:
             labels = get_labels_from_inventory(inventory)
-            print(labels)
             metrics['aap_find_inventories'].labels(**labels).set(inventory['id'])
             # Add code to handle metrics for inventories if needed
             
 if __name__ == "__main__":
-    json_files = ['total_jobs.json', 'jobs.json', 'teams.json','inventories.json']
-
+    
     total_successful_jobs_metric = Gauge('total_successful_jobs', 'Total number of successful jobs')
     total_failed_jobs_metric = Gauge('total_failed_jobs', 'Total number of failed jobs')
     total_jobs_num_metric = Gauge('total_jobs_num', 'Total number of jobs')
@@ -89,8 +84,14 @@ if __name__ == "__main__":
         
     }
 
-    for json_file in json_files:
-        create_prometheus_metrics(json_file, metrics)
+    data = {
+        'jobs_data':  get_data_jobs(token, headers),
+        'teams_data': get_data_teams(token, headers),
+        'total_jobs_data': total_jobs(token, headers),
+        'inventory_data': get_data_inventory(token, headers)
+    }
+    
+    create_prometheus_metrics(data, metrics)
 
     while True:
         time.sleep(300)

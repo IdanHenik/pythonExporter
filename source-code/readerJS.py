@@ -70,12 +70,13 @@ def get_data_jobs(token, headers):
             }
             desired_data.append(desired_item)
 
+    ####### OLD VERSION #######
     # Print the desired data
-    print(json.dumps(desired_data, indent=4, sort_keys=True))
+    #print(json.dumps(desired_data, indent=4, sort_keys=True))
 
     # Save the data to a JSON file
-    with open(f'{api_endpoint}.json', 'w') as json_file:
-        json.dump(desired_data, json_file, indent=4)
+    #with open(f'{api_endpoint}.json', 'w') as json_file:
+    #    json.dump(desired_data, json_file, indent=4)
 
 def get_data_teams(token, headers):
     api_endpoint = 'teams'
@@ -113,13 +114,13 @@ def get_data_teams(token, headers):
             },  
         }
         desired_data.append(desired_item)
-
+    ####### OLD VERSION #######
     # Print the desired data
-    print(json.dumps(desired_data, indent=4, sort_keys=True))
+    #print(json.dumps(desired_data, indent=4, sort_keys=True))
 
     # Save the data to a JSON file
-    with open(f'{api_endpoint}.json', 'w') as json_file:
-        json.dump(desired_data, json_file, indent=4)
+    #with open(f'{api_endpoint}.json', 'w') as json_file:
+    #    json.dump(desired_data, json_file, indent=4)
 
 def get_data_inventory(token, headers):
     api_endpoint = 'inventories'
@@ -156,13 +157,13 @@ def get_data_inventory(token, headers):
             },  
         }
         desired_data.append(desired_item)
-
+    ####### OLD VERSION #######
     # Print the desired data
-    print(json.dumps(desired_data, indent=4, sort_keys=True))
+    #print(json.dumps(desired_data, indent=4, sort_keys=True))
 
     # Save the data to a JSON file
-    with open(f'{api_endpoint}.json', 'w') as json_file:
-        json.dump(desired_data, json_file, indent=4)
+    #with open(f'{api_endpoint}.json', 'w') as json_file:
+    #    json.dump(desired_data, json_file, indent=4)
 
 def total_jobs(token, headers):
     api_endpoint = 'jobs'
@@ -200,18 +201,25 @@ def total_jobs(token, headers):
         "total_execution_time_avg": avg_execution_time
     }
 
-    print(json.dumps(total_jobs_data, indent=4, sort_keys=True))
+    ####### OLD VERSION #######
+    #print(json.dumps(total_jobs_data, indent=4, sort_keys=True))
 
-    with open('total_jobs.json', 'w') as json_file:
-        json.dump(total_jobs_data, json_file, indent=4)
+    #with open('total_jobs.json', 'w') as json_file:
+    #    json.dump(total_jobs_data, json_file, indent=4)
+
 
 # Example usage for /jobs endpoint
-get_data_jobs(token, headers)
+jobs_data = get_data_jobs(token, headers)
+print(json.dumps(jobs_data, indent=4, sort_keys=True))
 
 # Example usage for /teams endpoint
-get_data_teams(token, headers)
+teams_data = get_data_teams(token, headers)
+print(json.dumps(teams_data, indent=4, sort_keys=True))
 
 # Example usage for total_jobs endpoint
-total_jobs(token, headers)
+total_jobs_data = total_jobs(token, headers)
+print(json.dumps(total_jobs_data, indent=4, sort_keys=True))
 
-get_data_inventory(token,headers)
+# Example usage for /inventories endpoint
+inventory_data = get_data_inventory(token, headers)
+print(json.dumps(inventory_data, indent=4, sort_keys=True))
