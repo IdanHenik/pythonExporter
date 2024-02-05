@@ -15,7 +15,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t docker.io/ihenik/hubexporter:${{ github.ref_name }} --file Containerfile
+          docker build -t docker.io/ihenik/hubexporter:${{ github.ref_name }} .
         env:
           DOCKER_BUILDKIT: 1
 
