@@ -13,8 +13,6 @@ COPY source-code/* /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-RUN python3 readerJS.py
-RUN sleep 30
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
