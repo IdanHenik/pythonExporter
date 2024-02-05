@@ -7,9 +7,10 @@ api_url = os.environ.get('API_URL', 'https://example.com/api/v2/')
 token = os.environ.get('API_TOKEN', 'your_default_token')
 headers = {'Authorization': 'Bearer ' + token}
 
-def get_data_jobs(token, headers, api_url):
+def get_data_jobs():
     api_endpoint = 'jobs'
-    url = f'{api_url} + {api_endpoint}/'
+    url = f'{api_url}' + f'/{api_endpoint}' + '/'
+    print(url)
     payload = {}
 
     # makes request to controller user endpoint
@@ -71,6 +72,9 @@ def get_data_jobs(token, headers, api_url):
                 },
             }
             desired_data.append(desired_item)
+    print("OVERRR HEREEEEE")
+    print(f'{desired_data}')
+    return desired_data
 
     ####### OLD VERSION #######
     # Print the desired data
@@ -80,17 +84,17 @@ def get_data_jobs(token, headers, api_url):
     #with open(f'{api_endpoint}.json', 'w') as json_file:
     #    json.dump(desired_data, json_file, indent=4)
 
-def get_data_teams(token, headers,api_url):
+def get_data_teams():
     api_endpoint = 'teams'
-    url = f'{api_url} + {api_endpoint}/'
+    url = f'{api_url}' + f'/{api_endpoint}' + '/'
     payload = {}
 
     # makes request to controller user endpoint
     response = requests.request('GET', url, headers=headers, data=payload, allow_redirects=False, verify=False)
 
-    # Parse JSON response
+    # Parse JSON     response
     json_data = response.json()
-
+    print(json_data)
     # Extract desired fields for each object under "results"
     desired_data = []
     for result in json_data.get('results', []):
@@ -123,10 +127,11 @@ def get_data_teams(token, headers,api_url):
     # Save the data to a JSON file
     #with open(f'{api_endpoint}.json', 'w') as json_file:
     #    json.dump(desired_data, json_file, indent=4)
+    return desired_data
 
-def get_data_inventory(token, headers,api_url):
+def get_data_inventory():
     api_endpoint = 'inventories'
-    url = f'https://aap-aap.apps.cluster-grwtc.grwtc.sandbox60.opentlc.com/api/v2/{api_endpoint}/'
+    url = f'{api_url}' + f'/{api_endpoint}' + '/'
     payload = {}
 
     # makes request to controller user endpoint
@@ -137,6 +142,7 @@ def get_data_inventory(token, headers,api_url):
 
     # Extract desired fields for each object under "results"
     desired_data = []
+    print(url)
     for result in json_data.get('results', []):
         desired_item = {
             # Add the desired fields for teams
@@ -159,6 +165,7 @@ def get_data_inventory(token, headers,api_url):
             },  
         }
         desired_data.append(desired_item)
+    return desired_data
     ####### OLD VERSION #######
     # Print the desired data
     #print(json.dumps(desired_data, indent=4, sort_keys=True))
@@ -167,9 +174,9 @@ def get_data_inventory(token, headers,api_url):
     #with open(f'{api_endpoint}.json', 'w') as json_file:
     #    json.dump(desired_data, json_file, indent=4)
 
-def total_jobs(token,headers,api_url):
+def total_jobs():
     api_endpoint = 'jobs'
-    url = f'https://aap-aap.apps.cluster-grwtc.grwtc.sandbox60.opentlc.com/api/v2/{api_endpoint}/'
+    url = f'{api_url}' + f'/{api_endpoint}' + '/'
     payload = {}
 
     # makes request to controller user endpoint
@@ -177,7 +184,6 @@ def total_jobs(token,headers,api_url):
 
     # Parse JSON response
     json_data = response.json()
-
     # Total Jobs calculations
     successful_jobs_count = sum(1 for result in json_data.get('results', []) if result.get("status") == "successful")
     failed_jobs_count = sum(1 for result in json_data.get('results', []) if result.get("status") == "failed")
@@ -196,12 +202,13 @@ def total_jobs(token,headers,api_url):
         print('No jobs available.')
 
     # Print and save the data
-    total_jobs_data = {
+    return {
         "total_successful_jobs": successful_jobs_count,
         "total_failed_jobs": failed_jobs_count,
         "total_jobs_num": total_jobs_num,
         "total_execution_time_avg": avg_execution_time
     }
+    
 
     ####### OLD VERSION #######
     #print(json.dumps(total_jobs_data, indent=4, sort_keys=True))
@@ -211,17 +218,9 @@ def total_jobs(token,headers,api_url):
 
 
 # Example usage for /jobs endpoint
-jobs_data = get_data_jobs(token,headers,api_url)
-print(json.dumps(jobs_data, indent=4, sort_keys=True))
-
-# Example usage for /teams endpoint
-teams_data = get_data_teams(token, headers,api_url)
-print(json.dumps(teams_data, indent=4, sort_keys=True))
-
-# Example usage for total_jobs endpoint
-total_jobs_data = total_jobs(token, headers,api_url)
-print(json.dumps(total_jobs_data, indent=4, sort_keys=True))
-
-# Example usage for /inventories endpoint
-inventory_data = get_data_inventory(token, headers,api_url)
-print(json.dumps(inventory_data, indent=4, sort_keys=True))
+if __name__ == "__main__":
+    # Example usage
+    jobs_data = get_data_jobs()
+    teams_data = get_data_teams()
+    inventory_data = get_data_inventory()
+    total_jobs_data = total_jobs()

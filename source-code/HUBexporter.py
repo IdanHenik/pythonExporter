@@ -45,25 +45,26 @@ def get_labels_from_inventory(json_data):
     }
 
 def create_prometheus_metrics(data, metrics):
-    if 'total_jobs_data' in data:
-        labels = get_labels_from_job_total(data['total_jobs_data'])
-        metrics['total_successful_jobs_metric'].set(data['total_jobs_data']['total_successful_jobs'])
-        metrics['total_failed_jobs_metric'].set(data['total_jobs_data']['total_failed_jobs'])
-        metrics['total_jobs_num_metric'].set(data['total_jobs_data']['total_jobs_num'])
-        metrics['total_execution_time_avg_metric'].set(data['total_jobs_data']['total_execution_time_avg'])
-    elif 'jobs_data' in data:
-        for job in data['jobs_data']:
-            labels = get_labels_from_job(job)
-            metrics['get_jobs'].labels(**labels).set(job['elapsed'])
-    elif 'teams_data' in data:
-        for team in data['teams_data']:
-            labels = get_labels_from_teams(team)
-            metrics['aap_find_teams'].labels(**labels).set(team['id'])
-    elif 'inventory_data' in data:
-        for inventory in data['inventory_data']:
-            labels = get_labels_from_inventory(inventory)
-            metrics['aap_find_inventories'].labels(**labels).set(inventory['id'])
-            # Add code to handle metrics for inventories if needed
+    for subdata in data:
+        if 'total_jobs_data' in subdata:
+            labels = get_labels_from_job_total(data['total_jobs_data'])
+            metrics['total_successful_jobs_metric'].set(data['total_jobs_data']['total_successful_jobs'])
+            metrics['total_failed_jobs_metric'].set(data['total_jobs_data']['total_failed_jobs'])
+            metrics['total_jobs_num_metric'].set(data['total_jobs_data']['total_jobs_num'])
+            metrics['total_execution_time_avg_metric'].set(data['total_jobs_data']['total_execution_time_avg'])
+        elif 'jobs_data' in subdata:
+            for job in data['jobs_data']:
+                labels = get_labels_from_job(job)
+                metrics['get_jobs'].labels(**labels).set(job['elapsed'])
+        elif 'teams_data' in subdata:
+            for team in data['teams_data']:
+                labels = get_labels_from_teams(team)
+                metrics['aap_find_teams'].labels(**labels).set(team['id'])
+        elif 'inventory_data' in subdata:
+            for inventory in data['inventory_data']:
+                labels = get_labels_from_inventory(inventory)
+                metrics['aap_find_inventories'].labels(**labels).set(inventory['id'])
+                # Add code to handle metrics for inventories if needed
             
 if __name__ == "__main__":
     
@@ -89,13 +90,13 @@ if __name__ == "__main__":
     }
 
     data = {
-        'jobs_data':  get_data_jobs(token, headers),
-        'teams_data': get_data_teams(token, headers),
-        'total_jobs_data': total_jobs(token, headers),
-        'inventory_data': get_data_inventory(token, headers)
+        'jobs_data':  get_data_jobs(),
+        'teams_data': get_data_teams(),
+        'total_jobs_data': total_jobs(),
+        'inventory_data': get_data_inventory()
     }
     
     create_prometheus_metrics(data, metrics)
 
     while True:
-        time.sleep(300)
+        time.sleep(60)
