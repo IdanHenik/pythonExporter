@@ -1,7 +1,11 @@
 import json
 import time
+import os
 from prometheus_client import Gauge, start_http_server
 from readerJS import get_data_jobs, get_data_teams, get_data_inventory, total_jobs , token, headers
+
+api_url = os.environ.get('API_URL', 'https://example.com/api/v2/')
+api_token = os.environ.get('API_TOKEN', 'your_default_token')
 
 
 start_http_server(8000)

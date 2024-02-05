@@ -1,6 +1,10 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10
 
+# Set environment variables
+ENV API_URL=https://example.com/api/v2/
+ENV API_TOKEN=your_default_token
+
 # Set the working directory to /app
 WORKDIR /app
 
@@ -11,7 +15,6 @@ COPY . /app
 RUN pip install --no-cache-dir -r requirements.txt
 RUN python3 readerJS.py
 RUN sleep 30
-
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: HubExporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: HubExporter
+  template:
+    metadata:
+      labels:
+        app: HubExporter
+    spec:
+      containers:
+      - name: HubExporter
+        image: docker.io/ihenik/hubexporter:latest
+        env:
+        - name: API_URL
+          valueFrom:
+            configMapKeyRef:
+              name: api-config
+              key: API_URL
+        - name: API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: api-secret
+              key: API_TOKEN

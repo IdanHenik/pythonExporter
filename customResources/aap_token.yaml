@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: api-secret
+type: Opaque
+data:
+  API_TOKEN: base64_encoded_token_here

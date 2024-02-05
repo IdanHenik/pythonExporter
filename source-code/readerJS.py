@@ -1,13 +1,15 @@
 import requests
 import json
+import os
 from datetime import datetime, timedelta
 from collections import OrderedDict
-token = 'tDO8VWrhvpCwdtwUQtBNVefvvtBqxF'
+api_url = os.environ.get('API_URL', 'https://example.com/api/v2/')
+token = os.environ.get('API_TOKEN', 'your_default_token')
 headers = {'Authorization': 'Bearer ' + token}
 
-def get_data_jobs(token, headers):
+def get_data_jobs(token, headers, api_url):
     api_endpoint = 'jobs'
-    url = f'https://aap-aap.apps.cluster-grwtc.grwtc.sandbox60.opentlc.com/api/v2/{api_endpoint}/'
+    url = f'{api_url} + {api_endpoint}/'
     payload = {}
 
     # makes request to controller user endpoint
@@ -78,9 +80,9 @@ def get_data_jobs(token, headers):
     #with open(f'{api_endpoint}.json', 'w') as json_file:
     #    json.dump(desired_data, json_file, indent=4)
 
-def get_data_teams(token, headers):
+def get_data_teams(token, headers,api_url):
     api_endpoint = 'teams'
-    url = f'https://aap-aap.apps.cluster-grwtc.grwtc.sandbox60.opentlc.com/api/v2/{api_endpoint}/'
+    url = f'{api_url} + {api_endpoint}/'
     payload = {}
 
     # makes request to controller user endpoint
@@ -122,7 +124,7 @@ def get_data_teams(token, headers):
     #with open(f'{api_endpoint}.json', 'w') as json_file:
     #    json.dump(desired_data, json_file, indent=4)
 
-def get_data_inventory(token, headers):
+def get_data_inventory(token, headers,api_url):
     api_endpoint = 'inventories'
     url = f'https://aap-aap.apps.cluster-grwtc.grwtc.sandbox60.opentlc.com/api/v2/{api_endpoint}/'
     payload = {}
@@ -165,7 +167,7 @@ def get_data_inventory(token, headers):
     #with open(f'{api_endpoint}.json', 'w') as json_file:
     #    json.dump(desired_data, json_file, indent=4)
 
-def total_jobs(token, headers):
+def total_jobs(token,headers,api_url):
     api_endpoint = 'jobs'
     url = f'https://aap-aap.apps.cluster-grwtc.grwtc.sandbox60.opentlc.com/api/v2/{api_endpoint}/'
     payload = {}
@@ -209,17 +211,17 @@ def total_jobs(token, headers):
 
 
 # Example usage for /jobs endpoint
-jobs_data = get_data_jobs(token, headers)
+jobs_data = get_data_jobs(token,headers,api_url)
 print(json.dumps(jobs_data, indent=4, sort_keys=True))
 
 # Example usage for /teams endpoint
-teams_data = get_data_teams(token, headers)
+teams_data = get_data_teams(token, headers,api_url)
 print(json.dumps(teams_data, indent=4, sort_keys=True))
 
 # Example usage for total_jobs endpoint
-total_jobs_data = total_jobs(token, headers)
+total_jobs_data = total_jobs(token, headers,api_url)
 print(json.dumps(total_jobs_data, indent=4, sort_keys=True))
 
 # Example usage for /inventories endpoint
-inventory_data = get_data_inventory(token, headers)
+inventory_data = get_data_inventory(token, headers,api_url)
 print(json.dumps(inventory_data, indent=4, sort_keys=True))
