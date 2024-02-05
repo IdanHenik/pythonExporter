@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Demo Inventory",
+        "id": 1,
+        "created": "2024-01-21T19:46:16.075196Z",
+        "modified": "2024-01-21T19:46:16.075203Z",
+        "description": "",
+        "organization": {
+            "id": 1,
+            "name": "Default",
+            "description": ""
+        },
+        "created_by": {
+            "id": 1,
+            "username": "admin",
+            "first_name": "",
+            "last_name": ""
+        }
+    }
+]
