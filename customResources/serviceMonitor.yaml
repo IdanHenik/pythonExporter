@@ -2,8 +2,8 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    app: HubExporter
-  name: HubExporter-monitor
+    app: hubexporter
+  name: hubexporter-monitor
 spec:
   endpoints:
     - port: metrics
@@ -14,4 +14,4 @@ spec:
     - monitoring
   selector:
     matchLabels:
-      app: HubExporter
+      app: hubexporter
