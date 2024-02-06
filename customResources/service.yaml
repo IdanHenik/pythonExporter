@@ -9,5 +9,5 @@ spec:
     app: hubexporter
   ports:
     - name: metrics
-      port: 9000
+      port: 8000
       targetPort: metrics
