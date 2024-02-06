@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: HubExporter
+  name: hubexporter
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: HubExporter
+      app: hubexporter
   template:
     metadata:
       labels:
-        app: HubExporter
+        app: hubexporter
     spec:
       containers:
-      - name: HubExporter
+      - name: hubexporter
         image: docker.io/ihenik/hubexporter:latest
         env:
         - name: API_URL
