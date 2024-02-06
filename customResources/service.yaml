@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: HubExporter-exporter-service
+  name: hubexporter-exporter-service
   labels:
-    app: HubExporter
+    app: hubexporter
 spec:
   selector:
-    app: HubExporter
+    app: hubexporter
   ports:
     - name: metrics
       port: 9000
