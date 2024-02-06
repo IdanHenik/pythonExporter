@@ -10,11 +10,11 @@ headers = {'Authorization': 'Bearer ' + token}
 def get_data_jobs():
     api_endpoint = 'jobs'
     url = f'{api_url}' + f'/{api_endpoint}' + '/'
-    print(url)
     payload = {}
 
     # makes request to controller user endpoint
     response = requests.request('GET', url, headers=headers, data=payload, allow_redirects=False, verify=False)
+    print(url)
 
     # Parse JSON response
     json_data = response.json()
