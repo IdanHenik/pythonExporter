@@ -3,6 +3,7 @@ import time
 import os
 from prometheus_client import Gauge, start_http_server
 from readerJS import get_data_jobs, get_data_teams, get_data_inventory, total_jobs , token, headers
+import logging
 
 api_url = os.environ.get('API_URL', 'https://example.com/api/v2/')
 api_token = os.environ.get('API_TOKEN', 'your_default_token')
@@ -28,7 +29,6 @@ def get_labels_from_teams(json_data):
     created_by = json_data.get('created_by',{})
     return {
         'team_name': json_data.get('name', ''),
-        #'team_id': str(json_data.get('id', '')),
         'team_creation_timestamp': json_data.get('created', ''),
         'team_org': organization.get('name',''),
         'created_by': created_by.get('username','')
@@ -52,27 +52,33 @@ def create_prometheus_metrics(data, metrics):
             metrics['total_failed_jobs_metric'].set(data['total_jobs_data']['total_failed_jobs'])
             metrics['total_jobs_num_metric'].set(data['total_jobs_data']['total_jobs_num'])
             metrics['total_execution_time_avg_metric'].set(data['total_jobs_data']['total_execution_time_avg'])
-        elif 'jobs_data' in subdata:
+        else:
+            logging.error("Failed to retrieve total jobs data.")
+        if 'jobs_data' in subdata:
             for job in data['jobs_data']:
                 labels = get_labels_from_job(job)
                 metrics['get_jobs'].labels(**labels).set(job['elapsed'])
-        elif 'teams_data' in subdata:
+        else:
+            logging.error("Failed to retrieve total jobs data.")
+        if 'teams_data' in subdata:
             for team in data['teams_data']:
                 labels = get_labels_from_teams(team)
                 metrics['aap_find_teams'].labels(**labels).set(team['id'])
-        elif 'inventory_data' in subdata:
+        else:
+            logging.error("Failed to retrieve total jobs data.")
+        if 'inventory_data' in subdata:
             for inventory in data['inventory_data']:
                 labels = get_labels_from_inventory(inventory)
                 metrics['aap_find_inventories'].labels(**labels).set(inventory['id'])
                 # Add code to handle metrics for inventories if needed
-            
+        else:
+            logging.error("Failed to retrieve total jobs data.")    
 if __name__ == "__main__":
     
     total_successful_jobs_metric = Gauge('total_successful_jobs', 'Total number of successful jobs')
     total_failed_jobs_metric = Gauge('total_failed_jobs', 'Total number of failed jobs')
     total_jobs_num_metric = Gauge('total_jobs_num', 'Total number of jobs')
     total_execution_time_avg_metric = Gauge('total_execution_time_avg', 'Average execution time of jobs')
-    #job_execution_time = Gauge('job_execution_time_seconds', 'Execution time of jobs', labelnames=['custom_job_name', 'custom_job_status', 'custom_job_type', 'custom_job_playbook', 'custom_execution_time'])
     get_jobs = Gauge('get_jobs', 'Execution time of jobs', labelnames=['custom_job_name', 'custom_job_org','custom_job_status', 'custom_job_type', 'custom_job_playbook'])
     aap_find_teams = Gauge('aap_find_teams', 'AAP Teams', labelnames=['team_name','team_creation_timestamp','team_org','created_by'])
     aap_find_inventories = Gauge('aap_find_inventories', 'AAP Inventories', labelnames=['inv_name','inv_creation_timestamp','inv_org','created_by'])
@@ -82,7 +88,6 @@ if __name__ == "__main__":
         'total_failed_jobs_metric': total_failed_jobs_metric,
         'total_jobs_num_metric': total_jobs_num_metric,
         'total_execution_time_avg_metric': total_execution_time_avg_metric,
-       # 'job_execution_time': job_execution_time,
         'get_jobs': get_jobs,
         'aap_find_teams': aap_find_teams,
         'aap_find_inventories': aap_find_inventories

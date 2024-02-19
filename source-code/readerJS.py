@@ -72,26 +72,15 @@ def get_data_jobs():
                 },
             }
             desired_data.append(desired_item)
-    print("OVERRR HEREEEEE")
     print(f'{desired_data}')
+    response.raise_for_status()
     return desired_data
-
-    ####### OLD VERSION #######
-    # Print the desired data
-    #print(json.dumps(desired_data, indent=4, sort_keys=True))
-
-    # Save the data to a JSON file
-    #with open(f'{api_endpoint}.json', 'w') as json_file:
-    #    json.dump(desired_data, json_file, indent=4)
 
 def get_data_teams():
     api_endpoint = 'teams'
     url = f'{api_url}' + f'/{api_endpoint}' + '/'
     payload = {}
-
-    # makes request to controller user endpoint
     response = requests.request('GET', url, headers=headers, data=payload, allow_redirects=False, verify=False)
-
     # Parse JSON     response
     json_data = response.json()
     print(json_data)
@@ -120,13 +109,7 @@ def get_data_teams():
             },  
         }
         desired_data.append(desired_item)
-    ####### OLD VERSION #######
-    # Print the desired data
-    #print(json.dumps(desired_data, indent=4, sort_keys=True))
-
-    # Save the data to a JSON file
-    #with open(f'{api_endpoint}.json', 'w') as json_file:
-    #    json.dump(desired_data, json_file, indent=4)
+    response.raise_for_status()
     return desired_data
 
 def get_data_inventory():
@@ -151,7 +134,6 @@ def get_data_inventory():
             "created": result.get("created"),
             "modified": result.get("modified"),
             "description": result.get("description"),
-            ### I was HERE!!!@!@
             "organization": {
                 "id": result["summary_fields"]["organization"]["id"],
                 "name": result["summary_fields"]["organization"]["name"],
@@ -165,23 +147,14 @@ def get_data_inventory():
             },  
         }
         desired_data.append(desired_item)
+    response.raise_for_status()
     return desired_data
-    ####### OLD VERSION #######
-    # Print the desired data
-    #print(json.dumps(desired_data, indent=4, sort_keys=True))
-
-    # Save the data to a JSON file
-    #with open(f'{api_endpoint}.json', 'w') as json_file:
-    #    json.dump(desired_data, json_file, indent=4)
-
+    
 def total_jobs():
     api_endpoint = 'jobs'
     url = f'{api_url}' + f'/{api_endpoint}' + '/'
     payload = {}
-
-    # makes request to controller user endpoint
     response = requests.request('GET', url, headers=headers, data=payload, allow_redirects=False, verify=False)
-
     # Parse JSON response
     json_data = response.json()
     # Total Jobs calculations
@@ -200,7 +173,7 @@ def total_jobs():
     else:
         avg_execution_time = 0
         print('No jobs available.')
-
+    response.raise_for_status()
     # Print and save the data
     return {
         "total_successful_jobs": successful_jobs_count,
@@ -209,15 +182,6 @@ def total_jobs():
         "total_execution_time_avg": avg_execution_time
     }
     
-
-    ####### OLD VERSION #######
-    #print(json.dumps(total_jobs_data, indent=4, sort_keys=True))
-
-    #with open('total_jobs.json', 'w') as json_file:
-    #    json.dump(total_jobs_data, json_file, indent=4)
-
-
-# Example usage for /jobs endpoint
 if __name__ == "__main__":
     # Example usage
     jobs_data = get_data_jobs()

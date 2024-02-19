@@ -9,14 +9,18 @@ ENV API_TOKEN=your_default_token
 WORKDIR /app
 
 # Copy the current directory contents into the container at /app
-COPY source-code/* /app
+COPY source-code/ .
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install any needed packages specified in the 'packages' folder
+RUN pip3 install packages/*.whl    
+
+
+
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
 # Define environment variable
 
 # Run app.py when the container launches
-CMD ["python", "HUBexporter.py"]
+CMD ["python3", "HUBexporter.py"]
+
