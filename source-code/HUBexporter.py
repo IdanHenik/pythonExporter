@@ -45,34 +45,38 @@ def get_labels_from_inventory(json_data):
     }
 
 def create_prometheus_metrics(data, metrics):
+    print("Checking data type...")
     for subdata in data:
         if 'total_jobs_data' in subdata:
             labels = get_labels_from_job_total(data['total_jobs_data'])
+            print (f'Labels generated for  total jobs {labels}')
             metrics['total_successful_jobs_metric'].set(data['total_jobs_data']['total_successful_jobs'])
             metrics['total_failed_jobs_metric'].set(data['total_jobs_data']['total_failed_jobs'])
             metrics['total_jobs_num_metric'].set(data['total_jobs_data']['total_jobs_num'])
             metrics['total_execution_time_avg_metric'].set(data['total_jobs_data']['total_execution_time_avg'])
         else:
-            logging.error("Failed to retrieve total jobs data.")
+            print("Not a total_jobs data .. moving on")
         if 'jobs_data' in subdata:
             for job in data['jobs_data']:
                 labels = get_labels_from_job(job)
+                print (f'Label generated for job {labels}')
                 metrics['get_jobs'].labels(**labels).set(job['elapsed'])
         else:
-            logging.error("Failed to retrieve total jobs data.")
+            print("Not a jobs_data .. moving on")
         if 'teams_data' in subdata:
             for team in data['teams_data']:
                 labels = get_labels_from_teams(team)
+                print (f'Labels generated for teams {labels}')
                 metrics['aap_find_teams'].labels(**labels).set(team['id'])
-        else:
-            logging.error("Failed to retrieve total jobs data.")
         if 'inventory_data' in subdata:
             for inventory in data['inventory_data']:
                 labels = get_labels_from_inventory(inventory)
+                print (f'Labels generated for inv {labels}')
                 metrics['aap_find_inventories'].labels(**labels).set(inventory['id'])
                 # Add code to handle metrics for inventories if needed
         else:
-            logging.error("Failed to retrieve total jobs data.")    
+            print("Not a INV data .. moving on")    
+
 if __name__ == "__main__":
     
     total_successful_jobs_metric = Gauge('total_successful_jobs', 'Total number of successful jobs')
@@ -84,24 +88,24 @@ if __name__ == "__main__":
     aap_find_inventories = Gauge('aap_find_inventories', 'AAP Inventories', labelnames=['inv_name','inv_creation_timestamp','inv_org','created_by'])
 
     metrics = {
-        'total_successful_jobs_metric': total_successful_jobs_metric,
-        'total_failed_jobs_metric': total_failed_jobs_metric,
-        'total_jobs_num_metric': total_jobs_num_metric,
-        'total_execution_time_avg_metric': total_execution_time_avg_metric,
-        'get_jobs': get_jobs,
-        'aap_find_teams': aap_find_teams,
-        'aap_find_inventories': aap_find_inventories
-        
+    'total_successful_jobs_metric': total_successful_jobs_metric,
+    'total_failed_jobs_metric': total_failed_jobs_metric,
+    'total_jobs_num_metric': total_jobs_num_metric,
+    'total_execution_time_avg_metric': total_execution_time_avg_metric,
+    'get_jobs': get_jobs,
+    'aap_find_teams': aap_find_teams,
+    'aap_find_inventories': aap_find_inventories
+            
     }
-
-    data = {
-        'jobs_data':  get_data_jobs(),
-        'teams_data': get_data_teams(),
-        'total_jobs_data': total_jobs(),
-        'inventory_data': get_data_inventory()
-    }
-    
-    create_prometheus_metrics(data, metrics)
-
     while True:
+        data = {
+            'jobs_data':  get_data_jobs(),
+            'teams_data': get_data_teams(),
+            'total_jobs_data': total_jobs(),
+            'inventory_data': get_data_inventory()
+        }
+        
+        create_prometheus_metrics(data, metrics)
+
+        
         time.sleep(60)
